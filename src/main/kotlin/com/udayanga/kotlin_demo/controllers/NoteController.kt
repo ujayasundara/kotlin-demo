@@ -15,8 +15,7 @@ class NoteController(
     data class Request(
         val id: String?,
         val title: String,
-        val content: String,
-        val ownerId: String
+        val content: String
     )
 
     data class Response(
@@ -27,14 +26,16 @@ class NoteController(
     )
 
     @PostMapping
-    fun saveNote(body: Request): Response {
+    fun saveNote(
+        @RequestBody body: Request
+    ): Response {
         val note = repository.save(
             Note(
                 id = body.id?.let { ObjectId(it) } ?: ObjectId.get(),
                 title = body.title,
                 content = body.content,
                 createdAt = Instant.now(),
-                ownerId = ObjectId(body.ownerId)
+                ownerId = ObjectId()
             )
         )
         return note.toResponse()
